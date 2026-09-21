@@ -1,0 +1,17 @@
+Question: Add a short written note (comment or README) explaining the difference between the core Playwright package and the Playwright test runner package, 
+
+Based on My understanding.
+Playwright package: Mostly we want to maintain this explicity to launch the browser,
+
+from playwright.sync_api import Playwright
+
+def test_login(playwright:Playwright):
+    browser=playwright.chromium.launch()
+    context = browser.new_context()
+    page=context.new_page()
+
+Playwright test runner package : This package(page fixture) will handle the browser automatically example(no need of extra line of for launching browser)
+
+from playwright.sync_api import Page
+def test_login(page:Page):
+    page.goto('url')
