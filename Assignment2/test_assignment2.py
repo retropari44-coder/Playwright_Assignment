@@ -29,7 +29,7 @@ def test_secondTest(page: Page):
     page.goto('https://eventhub.rahulshettyacademy.com/login')
     locator = page.get_by_placeholder('you@email.com')
     locator.fill('beginner@sample.com')
-    assert locator.input_value() == 'beginner@sample.com'
+    assert (locator.input_value() == 'beginner@sample.com')
 
 
 # 3. Manual Playwright instance test
