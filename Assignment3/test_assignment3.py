@@ -25,8 +25,8 @@ def test_firstTest(page: Page):
     expect(event_cards.first).to_be_visible()
 
     assert event_cards.count() >= 1
+    
     first_card = event_cards.first
-
     title = first_card.locator('h3').inner_text()
     price = first_card.locator('p').inner_text()
     seats = first_card.locator('span').filter(has_text=re.compile(r'seat')).inner_text() 
@@ -52,7 +52,7 @@ def test_firstTest(page: Page):
     expect(event_cards.first).to_be_visible()
     event_cards_count=event_cards.count()
     assert event_cards_count >= 3
-    
+
     title_list = []
     for index in range(event_cards_count):
         title_locator=event_cards.nth(index).locator('h3')
