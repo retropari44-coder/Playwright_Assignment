@@ -106,8 +106,6 @@ class Verification:
         split_lines = event_card_locator.split('\n')
         return split_lines
          
-    
-
     def verify_fourth_test(self, booking_reference1,booking_reference2):
         event_card_locator = self.page.locator('#booking-card',has_text=booking_reference1['Booking Ref'])
         expect(event_card_locator).to_be_visible()
