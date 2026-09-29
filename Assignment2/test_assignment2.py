@@ -33,18 +33,11 @@ def test_secondTest(page: Page):
 
 
 # 3. Manual Playwright instance test
-def test_thirdTest(playwright: Playwright):
-    browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
-    page = context.new_page()
+def test_thirdTest(login_page):
+    login_page.goto('https://eventhub.rahulshettyacademy.com/login')
+    expect(login_page.get_by_role('heading', name='Sign in to EventHub')).to_be_visible()
 
-    page.goto('https://eventhub.rahulshettyacademy.com/login')
-    expect(page.get_by_role('heading', name='Sign in to EventHub')).to_be_visible()
-
-    locator = page.get_by_placeholder('you@email.com')
+    locator = login_page.get_by_placeholder('you@email.com')
     assert locator.input_value() == ''
-
-    context.close()
-    browser.close()
     
 
