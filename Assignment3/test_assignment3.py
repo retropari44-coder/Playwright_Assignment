@@ -24,7 +24,7 @@ def test_firstTest(page: Page):
     event_cards = page.locator('#event-card')    
     expect(event_cards.first).to_be_visible()
 
-    assert event_cards.count() >= 1
+    expect(event_cards).to_have_count(1)
     
     first_card = event_cards.first
     title = first_card.locator('h3').inner_text()
