@@ -10,12 +10,12 @@ def test_firstTest(page: Page):
     page.locator('#password').fill('March@0329')
     page.get_by_role("button", name="Sign In").click()
     
-    # Assert successful login
-    expect(page.get_by_role('heading', name="Discover & Book")).to_be_visible()
-    
+    # Assert successful login    
     # Navigation & Filters
     page.get_by_text("Browse Events →").click()
+    expect(page.get_by_role('heading', name="Upcoming Events")).to_be_visible()
     page.get_by_placeholder("Search events, venues…").fill('World')
+
 
     # Select dropdown options
     page.locator("select").filter(has_text="All Categories").select_option("Conference")    
