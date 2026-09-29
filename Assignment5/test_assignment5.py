@@ -139,7 +139,7 @@ def test_firstTest(page:Page):
     expect(event_cards.first).to_be_visible()
     event_cards_count = event_cards.count() 
     assert event_cards_count == 1
-
+    
     title = event_cards.first.locator('h3').inner_text()
     price = event_cards.first.locator('p').inner_text()
     card_text = event_cards.first.locator('span').all_inner_texts()
