@@ -1,5 +1,6 @@
 from playwright.sync_api import Playwright, expect, Page
 import re
+import time
 
 class Verification:
     def __init__(self,page: Page):
@@ -25,7 +26,10 @@ class Verification:
             word = event_cards.nth(index).locator('h3').inner_text()
             print("Title:",word)
             if search_word in word:
-                event_cards.nth(index).get_by_text('Book Now').click()
+                button_locator = event_cards.nth(index).get_by_text('Book Now')
+                expect(button_locator).to_be_visible()
+                button_locator.click()
+                time.sleep(1)
                 break
         expect(self.page.get_by_role('button',name='Confirm Booking')).to_be_visible()
         expect(self.page).to_have_url(re.compile(r'/events/'))

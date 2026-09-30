@@ -129,7 +129,6 @@ def test_firstTest(page:Page):
         expect(title_link).to_have_attribute("href", f"/events/{data['data'][index]['id']}")
 
     expect(event_cards.filter(has_text='World Tech Summit')).not_to_be_visible()
-
     page.get_by_placeholder("Search events, venues…").fill("Global Food")
     page.locator("select").filter(has_text="All Categories").select_option("Conference") 
     page.locator("select").filter(has_text="All Cities").select_option("Hyderabad")
