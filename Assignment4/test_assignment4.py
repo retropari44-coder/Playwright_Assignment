@@ -27,6 +27,7 @@ class Verification:
             if search_word in word:
                 event_cards.nth(index).get_by_text('Book Now').click()
                 break
+        expect(self.page.get_by_role('button',name='Confirm Booking')).to_be_visible()
         expect(self.page).to_have_url(re.compile(r'/events/'))
         expect(self.page.locator('h1')).to_contain_text(search_word, ignore_case=True)
 
@@ -148,7 +149,7 @@ def test_login_verification(page: Page):
 
     login_page.search_for_booking(search_word='Dilli',city='Delhi')
     login_page.book_tickets(no_of_tickets=2,name='Prithvi',email='loguraj568@gmail.com',phone='7708196869')
-    booking_details2 = login_page.retrive_booking_details().copy() #because we are using single object for all
+    booking_details2 = login_page.retrive_booking_details().copy() #copy() function will copy the value (if nested values is present, if we modify this both booking values will get changed).
     print(booking_details2)
 
     login_page.verify_second_test(booking_reference=booking_details2['Booking Ref'])

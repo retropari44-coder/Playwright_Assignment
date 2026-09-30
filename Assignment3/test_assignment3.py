@@ -41,7 +41,7 @@ def test_firstTest(page: Page):
     assert no_of_seats > 0
 
     first_card.get_by_text('Book Now').click()
-
+    expect(page.get_by_role('button',name='Confirm Booking')).to_be_visible()
     expect(page).to_have_url(re.compile(r'/events/'))
     expect(page.locator('h1')).to_have_text(title)
     expect(page.locator("p").filter(has_text=price)).to_be_visible()
