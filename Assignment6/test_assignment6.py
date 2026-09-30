@@ -29,6 +29,7 @@ class CreateBooking:
             print("Title:",word)
             if search_word in word:
                 event_cards.nth(index).get_by_text('Book Now').click()
+                time.sleep(1)
                 break
         expect(self.page).to_have_url(re.compile(r'/events/'))
         expect(self.page.locator('h1')).to_contain_text(search_word, ignore_case=True)
@@ -86,7 +87,7 @@ class HandlingRoute(CreateBooking):
         print(original_data_total_price)
         
         patched_locator = self.page.locator("#booking-card").filter(has_text=patched_reference)
-
+        
         expect(patched_locator).to_be_visible()
         expect(patched_locator.locator("h3",has_text=patched_title)).to_be_visible()
         expect(patched_locator).to_contain_text(f"${patched_total_price}")
@@ -95,6 +96,7 @@ class HandlingRoute(CreateBooking):
         expect(original_locator).to_be_visible()
         expect(original_locator.locator("h3",has_text=original_data_title)).to_be_visible()
         expect(original_locator).to_contain_text(f"${original_data_total_price:,}")
+
         button_locator = patched_locator.get_by_role("link", name="View Details")
         event_id = button_locator.get_attribute('href')
         id = event_id.split('/')[2]
@@ -142,7 +144,6 @@ def test_routeverification(page:Page):
     page.get_by_role("link", name="My Bookings").first.click()
     expect(page.locator(".space-y-4.mb-8")).to_be_visible()
     booking.verify_patch_filler()
-
 
 
     
