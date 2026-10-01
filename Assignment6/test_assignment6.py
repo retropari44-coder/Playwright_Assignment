@@ -31,6 +31,7 @@ class CreateBooking:
                 event_cards.nth(index).get_by_text('Book Now').click()
                 time.sleep(1)
                 break
+        expect(self.page.get_by_role('button',name='Confirm Booking')).to_be_visible()
         expect(self.page).to_have_url(re.compile(r'/events/'))
         expect(self.page.locator('h1')).to_contain_text(search_word, ignore_case=True)
 
