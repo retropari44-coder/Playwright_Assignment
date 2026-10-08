@@ -1,0 +1,286 @@
+{
+  "info": {
+    "_postman_id": "312086c7-362a-4869-8f90-8c7f3ecd2cb8",
+    "name": "MiniProject",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58676307",
+    "_collection_link": "https://go.postman.co/collection/58676307-312086c7-362a-4869-8f90-8c7f3ecd2cb8?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "jsondata = pm.response.json()\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n    pm.expect(jsondata).to.have.property(\"success\")\r\n    token = jsondata.token\r\n    console.log(token)\r\n    pm.collectionVariables.set(\"token\",token)\r\n    email = pm.collectionVariables.get(\"email\")\r\n    pm.expect(jsondata.user.email).to.eql(email)\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"{{email}}\",\r\n\"password\":\"{{password}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Event Details",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "jsonData = pm.response.json()\r\npm.test(\"Status Code is 200\",function(){\r\n    pm.response.to.have.status(200);\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);   \r\n});\r\npm.test(\"Data is not empty\", function () {\r\n    pm.expect(jsonData.data.length).to.be.above(0);\r\n});\r\npm.test(\"Checking Property\", function () {\r\n    pm.expect(jsonData).to.have.property(\"success\");\r\n    pm.expect(jsonData).to.have.property(\"data\");\r\n\r\n});\r\npm.test(\"Data Present \",function(){\r\n    data_length = jsonData.data.length\r\n    for(let i=0;i<data_length;i++){\r\n        if(jsonData.data[i].title == \"World Tech Summit\"){\r\n            pm.collectionVariables.set(\"event_id\", jsonData.data[i].id);\r\n            pm.collectionVariables.set(\"title\",jsonData.data[i].title);\r\n            pm.collectionVariables.set(\"availableSeats\",jsonData.data[i].availableSeats);\r\n        }\r\n    }\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/events",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "events"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ticket Booking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set(\"ticket\", _.random(1, pm.collectionVariables.get(\"availableSeats\")));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const jsonData = pm.response.json();\npm.test(\"Status Code is 201\", function () {\n    pm.response.to.have.status(201);\n    pm.expect(jsonData.success).to.be.true;\n});\npm.test(\"Check Book Status Confirmed\", function () {\n    pm.expect(jsonData.message).to.be.eql(\"Booking confirmed!\");\n    pm.expect(pm.response.text()).to.include(\"Booking confirmed\");\n    pm.expect(jsonData.data.status).to.be.eql(\"confirmed\");\n    pm.expect(jsonData.data.quantity).to.be.eql(parseInt(pm.collectionVariables.get(\"ticket\")));\n});\npm.test(\"Check Booking Details\", function () {\n    pm.expect(jsonData.data.id).to.be.a('number');\n    pm.collectionVariables.set(\"bookingId\", jsonData.data.id);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"customerEmail\":\"{{email}}\",\r\n\"customerName\": \"{{$randomFirstName}}\",\r\n\"customerPhone\":\"{{$randomPhoneNumber}}\",\r\n\"eventId\":\"{{event_id}}\",\r\n\"quantity\":\"{{ticket}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/bookings",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bookings"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Booked Details",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "jsonData = pm.response.json();\r\n\r\npm.test(\"Status to be 200\", function(){\r\n    pm.response.to.have.status(200); \r\n    pm.expect(jsonData.success).to.be.true;\r\n});\r\n\r\npm.test(\"Booking should have correct data\", function () {\r\n    pm.expect(jsonData.data.id).to.eql(pm.collectionVariables.get(\"bookingId\"));\r\n    pm.expect(jsonData.data.customerEmail).to.eql(pm.collectionVariables.get(\"email\"));\r\n    pm.expect(jsonData.data.quantity).to.eql(pm.collectionVariables.get(\"ticket\"));\r\n    pm.expect(jsonData.data.event.title).to.eql(pm.collectionVariables.get(\"title\"));\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bookings/{{bookingId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bookings",
+            "{{bookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Booked Ticket",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Booking Details should be cancelled\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Booking cancelled\");\r\n    pm.expect(pm.response.json().success).to.be.true;\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bookings/{{bookingId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bookings",
+            "{{bookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Booked Details",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const jsonData = pm.response.json();\r\n\r\npm.test(\"Status to be 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Booking should not be found\", function () {\r\n    const bookingId = pm.collectionVariables.get(\"bookingId\");\r\n\r\n    pm.expect(pm.response.text())\r\n        .to.include(`Booking with id ${bookingId} not found`);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/bookings/{{bookingId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "bookings",
+            "{{bookingId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "title",
+      "value": ""
+    },
+    {
+      "key": "event_id",
+      "value": ""
+    },
+    {
+      "key": "ticket",
+      "value": ""
+    },
+    {
+      "key": "availableSeats",
+      "value": ""
+    },
+    {
+      "key": "bookingId",
+      "value": ""
+    }
+  ]
+}
