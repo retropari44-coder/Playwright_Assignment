@@ -2,7 +2,7 @@ import re
 import pytest
 from playwright.sync_api import Playwright, expect, Page
 
-# @pytest.mark.parametrize("browserInstance", ["chromium", "firefox"])
+# @pytest.mark.parametrize("browserInstance1,browserInstance2", [("chromium", "firefox")])
 # def test_firstTest(playwright: Playwright, browserInstance):
 #     if browserInstance == "chromium":
 #         browser = playwright.chromium.launch()
